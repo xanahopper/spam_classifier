@@ -5,6 +5,7 @@ from collections import Counter
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.neighbors import NearestNeighbors
+from sklearn.feature_extraction import stop_words as sw
 
 DATA_ROOT = '/Users/xana/Dev/data/20_newsgroups/alt.atheism/'
 DICT_SIZE = 3000
@@ -22,7 +23,7 @@ def load_dictionary(train_dir):
             mail = email.message_from_file(m)
             for line in mail.get_payload().split('\n'):
                 words = re.split(SPLIT_REG, line.strip())
-                all_words += [word.strip(" .,\"';()~!?|#").lower() for word in words if len(word) > 0]
+                all_words += [word.strip(" .,\"';()~!?|#").lower() for word in words if len(word) > 0 and word not in sw]
 
     dictionary = Counter(all_words)
     keys = list(dictionary.keys())
@@ -54,13 +55,13 @@ def extract_features(mail_dir, dictionary):
 def classify_kmeans(features, k):
     estimator = KMeans(k)
     estimator.fit(features)
-    print(estimator.labels_)
     return estimator.labels_
-
 
 def classify_knn(features, k):
     nbrs = NearestNeighbors(k).fit(features)
 
+def classify_nb(features):
+    nb_classifier = NativeB
 
 
 if __name__ == '__main__':
